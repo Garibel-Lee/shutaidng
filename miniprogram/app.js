@@ -32,8 +32,6 @@ App({
         this.globalData.openid = openid;
         this.globalData.logged = true;
         console.log('登录成功, openid:', openid);
-        // 加载用户昵称
-        this.loadNickname();
         return openid;
       })
       .catch((err) => {
@@ -56,18 +54,35 @@ App({
     return this.login();
   },
 
+  // 昵称加载 Promise，避免重复请求
+  _nicknamePromise: null,
+
   /**
    * 从云端加载用户昵称
+   * @returns {Promise<string>} nickname
    */
-  async loadNickname() {
-    try {
-      const db = wx.cloud.database();
-      const res = await db.collection('users').limit(1).get();
-      if (res.data.length > 0 && res.data[0].nickname) {
-        this.globalData.nickname = res.data[0].nickname;
-      }
-    } catch (err) {
-      console.error('加载昵称失败:', err);
+  loadNickname() {
+    // 已有昵称直接返回
+    if (this.globalData.nickname) {
+      return Promise.resolve(this.globalData.nickname);
     }
+    // 防止并发重复请求
+    if (this._nicknamePromise) return this._nicknamePromise;
+
+    this._nicknamePromise = (async () => {
+      try {
+        const db = wx.cloud.database();
+        const res = await db.collection('users').limit(1).get();
+        if (res.data.length > 0 && res.data[0].nickname) {
+          this.globalData.nickname = res.data[0].nickname;
+        }
+      } catch (err) {
+        console.error('加载昵称失败:', err);
+      }
+      this._nicknamePromise = null;
+      return this.globalData.nickname;
+    })();
+
+    return this._nicknamePromise;
   },
 });

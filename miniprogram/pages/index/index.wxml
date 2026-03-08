@@ -1,22 +1,36 @@
 <!-- 计数主页 -->
 <view class="container">
-  <!-- 用户昵称 -->
-  <view class="card user-card">
-    <view class="user-info" wx:if="{{nickname}}">
-      <text class="user-greeting">{{nickname}}，记得数胎动哦</text>
-      <text class="user-edit" bindtap="onEditNickname">修改</text>
-    </view>
-    <view class="user-info" wx:else>
-      <text class="user-greeting">请设置昵称</text>
-      <button class="nickname-btn" bindtap="onEditNickname">设置昵称</button>
+  <!-- 强制登录引导（未设置昵称时遮罩显示） -->
+  <view class="login-gate" wx:if="{{showLoginGate}}">
+    <view class="login-card">
+      <view class="login-icon">!</view>
+      <view class="login-title">请先设置昵称</view>
+      <view class="login-desc">设置昵称后数据将同步到云端，确保不会丢失。未登录的数据仅保存在本地，退出后将无法恢复。</view>
+      <input
+        class="nickname-input"
+        type="nickname"
+        placeholder="点击获取微信昵称"
+        value="{{nicknameInput}}"
+        bindinput="onNicknameInput"
+        bindblur="onNicknameBlur"
+      />
+      <button class="btn-primary login-confirm-btn" bindtap="onConfirmNickname">确认并开始</button>
     </view>
   </view>
 
-  <!-- 昵称输入弹窗 -->
+  <!-- 用户昵称 -->
+  <view class="card user-card" wx:if="{{nickname}}">
+    <view class="user-info">
+      <text class="user-greeting">{{nickname}}，记得数胎动哦</text>
+      <text class="user-edit" bindtap="onEditNickname">修改</text>
+    </view>
+  </view>
+
+  <!-- 昵称修改弹窗 -->
   <view class="nickname-modal" wx:if="{{showNicknameModal}}">
     <view class="nickname-mask" bindtap="onCancelNickname"></view>
     <view class="nickname-dialog">
-      <view class="nickname-title">设置昵称</view>
+      <view class="nickname-title">修改昵称</view>
       <input
         class="nickname-input"
         type="nickname"
@@ -27,7 +41,7 @@
       />
       <view class="nickname-actions">
         <button class="btn-secondary" bindtap="onCancelNickname">取消</button>
-        <button class="btn-primary nickname-confirm" bindtap="onConfirmNickname">确定</button>
+        <button class="btn-primary nickname-confirm" bindtap="onUpdateNickname">确定</button>
       </view>
     </view>
   </view>
@@ -52,7 +66,6 @@
       >Cardiff法</view>
     </view>
     <view class="method-desc">{{methodDesc}}</view>
-
   </view>
 
   <!-- 计数显示区 -->

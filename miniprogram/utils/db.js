@@ -3,10 +3,11 @@
  *
  * 集合设计：
  * - sessions: 计数会话记录
- *   {
- *     _openid, method, startTime, endTime, duration,
- *     taps: [timestamp], realCount, status, period
- *   }
+ *   { _openid, method, startTime, endTime, duration, taps, realCount, status }
+ * - users: 用户信息
+ *   { _openid, nickname, createTime, updateTime }
+ *
+ * 所有查询显式按 _openid 过滤，防止数据串台
  */
 
 const db = wx.cloud.database();
@@ -15,13 +16,24 @@ const _ = db.command;
 const COLLECTION = 'sessions';
 const USER_COLLECTION = 'users';
 
+/**
+ * 获取当前用户 openid
+ */
+function getOpenid() {
+  const app = getApp();
+  return app.globalData.openid;
+}
+
 // --- 用户相关 ---
 
 /**
  * 获取当前用户信息
  */
 async function getUserInfo() {
+  const openid = getOpenid();
+  const where = openid ? { _openid: openid } : {};
   const res = await db.collection(USER_COLLECTION)
+    .where(where)
     .limit(1)
     .get();
   return res.data.length > 0 ? res.data[0] : null;
@@ -42,17 +54,18 @@ async function saveNickname(nickname) {
   });
 }
 
+// --- 会话相关 ---
+
 /**
  * 创建新会话
  */
 async function createSession(data) {
-  const { method, period } = data;
+  const { method } = data;
   const now = Date.now();
 
   const res = await db.collection(COLLECTION).add({
     data: {
       method,
-      period: period || null,
       startTime: now,
       endTime: null,
       duration: 0,
@@ -94,7 +107,7 @@ async function endSession(sessionId, realCount, duration) {
 }
 
 /**
- * 获取当日会话列表
+ * 获取当日会话列表（按当前用户）
  */
 async function getTodaySessions() {
   const today = new Date();
@@ -102,10 +115,14 @@ async function getTodaySessions() {
   const todayStart = today.getTime();
   const todayEnd = todayStart + 24 * 60 * 60 * 1000;
 
+  const openid = getOpenid();
+  const where = {
+    startTime: _.gte(todayStart).and(_.lt(todayEnd)),
+  };
+  if (openid) where._openid = openid;
+
   const res = await db.collection(COLLECTION)
-    .where({
-      startTime: _.gte(todayStart).and(_.lt(todayEnd)),
-    })
+    .where(where)
     .orderBy('startTime', 'desc')
     .get();
 
@@ -113,16 +130,21 @@ async function getTodaySessions() {
 }
 
 /**
- * 获取指定日期范围的会话（用于统计）
+ * 获取指定日期范围的会话（按当前用户）
  * @param {number} startDate - 开始时间戳
  * @param {number} endDate - 结束时间戳
+ * @param {boolean} completedOnly - 是否只返回已完成的，默认 true
  */
-async function getSessionsByRange(startDate, endDate) {
+async function getSessionsByRange(startDate, endDate, completedOnly = true) {
+  const openid = getOpenid();
+  const where = {
+    startTime: _.gte(startDate).and(_.lt(endDate)),
+  };
+  if (completedOnly) where.status = 'completed';
+  if (openid) where._openid = openid;
+
   const res = await db.collection(COLLECTION)
-    .where({
-      startTime: _.gte(startDate).and(_.lt(endDate)),
-      status: 'completed',
-    })
+    .where(where)
     .orderBy('startTime', 'asc')
     .get();
 
@@ -130,7 +152,7 @@ async function getSessionsByRange(startDate, endDate) {
 }
 
 /**
- * 获取最近N天的每日胎动统计
+ * 获取最近N天的每日胎动统计（按当前用户）
  * @param {number} days - 天数
  */
 async function getDailyStats(days) {
@@ -163,11 +185,15 @@ async function getDailyStats(days) {
 }
 
 /**
- * 获取活跃会话（未完成的）
+ * 获取活跃会话（按当前用户）
  */
 async function getActiveSession() {
+  const openid = getOpenid();
+  const where = { status: 'active' };
+  if (openid) where._openid = openid;
+
   const res = await db.collection(COLLECTION)
-    .where({ status: 'active' })
+    .where(where)
     .orderBy('startTime', 'desc')
     .limit(1)
     .get();

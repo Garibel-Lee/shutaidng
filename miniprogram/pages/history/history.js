@@ -24,7 +24,9 @@ Page({
   async onShow() {
     const app = getApp();
     await app.ensureLogin();
-    this.loadSessions();
+    // 每次切换到此页都重新加载数据
+    this.updateDisplayDate();
+    await this.loadSessions();
   },
 
   // --- 日期导航 ---

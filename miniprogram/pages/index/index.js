@@ -3,7 +3,8 @@ const dbUtil = require('../../utils/db');
 
 Page({
   data: {
-    // 用户
+    // 登录状态
+    showLoginGate: false,
     nickname: '',
     showNicknameModal: false,
     nicknameInput: '',
@@ -49,17 +50,17 @@ Page({
   async onShow() {
     const app = getApp();
     await app.ensureLogin();
-    // 加载昵称
+    // 等待昵称加载完成
+    await app.loadNickname();
+
     if (app.globalData.nickname) {
-      this.setData({ nickname: app.globalData.nickname });
+      this.setData({ nickname: app.globalData.nickname, showLoginGate: false });
     } else {
-      // 等一下再试（登录后异步加载）
-      setTimeout(() => {
-        if (app.globalData.nickname) {
-          this.setData({ nickname: app.globalData.nickname });
-        }
-      }, 1000);
+      // 未设置昵称，强制显示登录引导
+      this.setData({ showLoginGate: true, nickname: '' });
     }
+
+    // 每次进入都刷新数据
     this.loadTodayStats();
     this.checkActiveSession();
   },
@@ -72,24 +73,15 @@ Page({
     // 不清除计时器，保持后台运行
   },
 
-  // --- 昵称设置 ---
-  onEditNickname() {
-    this.setData({ showNicknameModal: true, nicknameInput: this.data.nickname });
-  },
-
+  // --- 首次登录设置昵称 ---
   onNicknameInput(e) {
     this.setData({ nicknameInput: e.detail.value });
   },
 
   onNicknameBlur(e) {
-    // 微信 nickname 类型 input blur 时返回真实昵称
     if (e.detail.value) {
       this.setData({ nicknameInput: e.detail.value });
     }
-  },
-
-  onCancelNickname() {
-    this.setData({ showNicknameModal: false });
   },
 
   async onConfirmNickname() {
@@ -98,16 +90,32 @@ Page({
       wx.showToast({ title: '请输入昵称', icon: 'none' });
       return;
     }
+    wx.showLoading({ title: '保存中...' });
     try {
       await dbUtil.saveNickname(nickname);
       const app = getApp();
       app.globalData.nickname = nickname;
-      this.setData({ nickname, showNicknameModal: false });
+      this.setData({ nickname, showLoginGate: false, showNicknameModal: false });
+      wx.hideLoading();
       wx.showToast({ title: '设置成功' });
     } catch (err) {
+      wx.hideLoading();
       console.error('保存昵称失败:', err);
-      wx.showToast({ title: '保存失败', icon: 'none' });
+      wx.showToast({ title: '保存失败，请重试', icon: 'none' });
     }
+  },
+
+  // --- 修改昵称 ---
+  onEditNickname() {
+    this.setData({ showNicknameModal: true, nicknameInput: this.data.nickname });
+  },
+
+  onCancelNickname() {
+    this.setData({ showNicknameModal: false });
+  },
+
+  async onUpdateNickname() {
+    await this.onConfirmNickname();
   },
 
   // --- 方法切换 ---
@@ -128,6 +136,12 @@ Page({
 
   // --- 核心：点击按钮 ---
   async onTapButton() {
+    // 未登录拦截
+    if (!this.data.nickname) {
+      this.setData({ showLoginGate: true });
+      return;
+    }
+
     // 如果尚未开始，先启动会话
     if (!this.data.isActive) {
       await this.startSession();
@@ -236,7 +250,6 @@ Page({
       await dbUtil.addTap(sessionId, tapTime, realCount);
     } catch (err) {
       console.error('同步点击失败:', err);
-      // 失败不影响本地使用，后续可以做重试
     }
   },
 
@@ -296,7 +309,6 @@ Page({
     try {
       const session = await dbUtil.getActiveSession();
       if (session) {
-        // 恢复会话
         this._startTime = session.startTime;
         this.setData({
           isActive: true,

@@ -13,14 +13,11 @@ Page({
     dailyStats: [],
   },
 
-  onLoad() {
-    this.loadStats();
-  },
-
   async onShow() {
     const app = getApp();
     await app.ensureLogin();
-    this.loadStats();
+    // 每次切换到此页都重新加载数据
+    await this.loadStats();
   },
 
   switchRange(e) {

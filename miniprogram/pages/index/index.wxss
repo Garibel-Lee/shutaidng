@@ -1,3 +1,56 @@
+/* 强制登录引导 */
+.login-gate {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  width: 600rpx;
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 60rpx 48rpx;
+  text-align: center;
+}
+
+.login-icon {
+  width: 80rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 50%;
+  background: #FFF3E0;
+  color: #FF9800;
+  font-size: 48rpx;
+  font-weight: 700;
+  margin: 0 auto 24rpx;
+}
+
+.login-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.login-desc {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1.6;
+  margin-bottom: 36rpx;
+}
+
+.login-confirm-btn {
+  width: 100%;
+  margin-top: 24rpx;
+}
+
 /* 用户昵称 */
 .user-card {
   padding: 24rpx 30rpx;
