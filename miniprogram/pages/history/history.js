@@ -24,7 +24,10 @@ Page({
   async onShow() {
     const app = getApp();
     await app.ensureLogin();
-    // 每次切换到此页都重新加载数据
+    // 每次切换到此页，重置到今天并重新加载
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    this.setData({ currentDate: today.getTime() });
     this.updateDisplayDate();
     await this.loadSessions();
   },

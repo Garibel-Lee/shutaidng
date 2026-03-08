@@ -7,7 +7,7 @@
  * - users: 用户信息
  *   { _openid, nickname, createTime, updateTime }
  *
- * 所有查询显式按 _openid 过滤，防止数据串台
+ * 所有查询强制按 _openid 过滤，openid 未就绪时阻塞等待
  */
 
 const db = wx.cloud.database();
@@ -17,11 +17,21 @@ const COLLECTION = 'sessions';
 const USER_COLLECTION = 'users';
 
 /**
- * 获取当前用户 openid
+ * 获取当前用户 openid（强制等待登录完成）
+ * 如果 openid 不存在，会调用 app.ensureLogin() 等待
+ * @returns {Promise<string>} openid
  */
-function getOpenid() {
+async function ensureOpenid() {
   const app = getApp();
-  return app.globalData.openid;
+  if (app.globalData.openid) {
+    return app.globalData.openid;
+  }
+  // 等待登录完成
+  const openid = await app.ensureLogin();
+  if (!openid) {
+    throw new Error('登录失败，无法获取用户标识');
+  }
+  return openid;
 }
 
 // --- 用户相关 ---
@@ -30,10 +40,9 @@ function getOpenid() {
  * 获取当前用户信息
  */
 async function getUserInfo() {
-  const openid = getOpenid();
-  const where = openid ? { _openid: openid } : {};
+  const openid = await ensureOpenid();
   const res = await db.collection(USER_COLLECTION)
-    .where(where)
+    .where({ _openid: openid })
     .limit(1)
     .get();
   return res.data.length > 0 ? res.data[0] : null;
@@ -43,6 +52,7 @@ async function getUserInfo() {
  * 保存用户昵称
  */
 async function saveNickname(nickname) {
+  await ensureOpenid();
   const user = await getUserInfo();
   if (user) {
     return db.collection(USER_COLLECTION).doc(user._id).update({
@@ -60,6 +70,7 @@ async function saveNickname(nickname) {
  * 创建新会话
  */
 async function createSession(data) {
+  await ensureOpenid();
   const { method } = data;
   const now = Date.now();
 
@@ -107,22 +118,20 @@ async function endSession(sessionId, realCount, duration) {
 }
 
 /**
- * 获取当日会话列表（按当前用户）
+ * 获取当日会话列表（强制按当前用户）
  */
 async function getTodaySessions() {
+  const openid = await ensureOpenid();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const todayStart = today.getTime();
   const todayEnd = todayStart + 24 * 60 * 60 * 1000;
 
-  const openid = getOpenid();
-  const where = {
-    startTime: _.gte(todayStart).and(_.lt(todayEnd)),
-  };
-  if (openid) where._openid = openid;
-
   const res = await db.collection(COLLECTION)
-    .where(where)
+    .where({
+      _openid: openid,
+      startTime: _.gte(todayStart).and(_.lt(todayEnd)),
+    })
     .orderBy('startTime', 'desc')
     .get();
 
@@ -130,18 +139,15 @@ async function getTodaySessions() {
 }
 
 /**
- * 获取指定日期范围的会话（按当前用户）
- * @param {number} startDate - 开始时间戳
- * @param {number} endDate - 结束时间戳
- * @param {boolean} completedOnly - 是否只返回已完成的，默认 true
+ * 获取指定日期范围的会话（强制按当前用户）
  */
 async function getSessionsByRange(startDate, endDate, completedOnly = true) {
-  const openid = getOpenid();
+  const openid = await ensureOpenid();
   const where = {
+    _openid: openid,
     startTime: _.gte(startDate).and(_.lt(endDate)),
   };
   if (completedOnly) where.status = 'completed';
-  if (openid) where._openid = openid;
 
   const res = await db.collection(COLLECTION)
     .where(where)
@@ -152,8 +158,7 @@ async function getSessionsByRange(startDate, endDate, completedOnly = true) {
 }
 
 /**
- * 获取最近N天的每日胎动统计（按当前用户）
- * @param {number} days - 天数
+ * 获取最近N天的每日胎动统计（强制按当前用户）
  */
 async function getDailyStats(days) {
   const endDate = new Date();
@@ -185,15 +190,15 @@ async function getDailyStats(days) {
 }
 
 /**
- * 获取活跃会话（按当前用户）
+ * 获取活跃会话（强制按当前用户）
  */
 async function getActiveSession() {
-  const openid = getOpenid();
-  const where = { status: 'active' };
-  if (openid) where._openid = openid;
-
+  const openid = await ensureOpenid();
   const res = await db.collection(COLLECTION)
-    .where(where)
+    .where({
+      _openid: openid,
+      status: 'active',
+    })
     .orderBy('startTime', 'desc')
     .limit(1)
     .get();
