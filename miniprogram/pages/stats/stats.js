@@ -17,7 +17,9 @@ Page({
     this.loadStats();
   },
 
-  onShow() {
+  async onShow() {
+    const app = getApp();
+    await app.ensureLogin();
     this.loadStats();
   },
 

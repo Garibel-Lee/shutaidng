@@ -3,6 +3,8 @@ const dbUtil = require('../../utils/db');
 
 Page({
   data: {
+    leftArrow: '<',
+    rightArrow: '>',
     currentDate: null, // 当前查看日期的时间戳（当天0点）
     displayDate: '',
     sessions: [],
@@ -19,7 +21,9 @@ Page({
     this.updateDisplayDate();
   },
 
-  onShow() {
+  async onShow() {
+    const app = getApp();
+    await app.ensureLogin();
     this.loadSessions();
   },
 

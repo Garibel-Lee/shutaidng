@@ -42,7 +42,9 @@ Page({
     this.updateMethodDesc();
   },
 
-  onShow() {
+  async onShow() {
+    const app = getApp();
+    await app.ensureLogin();
     this.loadTodayStats();
     this.checkActiveSession();
   },

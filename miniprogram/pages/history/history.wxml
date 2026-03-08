@@ -2,11 +2,11 @@
 <view class="container">
   <view class="date-header">
     <view class="date-nav" bindtap="prevDay">
-      <text class="arrow">&#60;</text>
+      <text class="arrow">{{leftArrow}}</text>
     </view>
     <view class="date-text">{{displayDate}}</view>
     <view class="date-nav" bindtap="nextDay">
-      <text class="arrow">&#62;</text>
+      <text class="arrow">{{rightArrow}}</text>
     </view>
   </view>
 

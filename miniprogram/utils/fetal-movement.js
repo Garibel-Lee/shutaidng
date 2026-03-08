@@ -62,8 +62,8 @@ const METHODS = {
   },
   three_times: {
     name: '三次法',
-    duration: 60 * 60 * 1000, // 每次1小时
-    description: '早中晚各数1小时，3次之和x4=12小时估值，正常>=30次',
+    duration: 2 * 60 * 60 * 1000, // 每次2小时
+    description: '早中晚各数2小时，3次之和x2=12小时估值，正常>=30次',
     normalThreshold: 10, // 单次>=10次为正常（3次之和>=30）
     periods: ['morning', 'afternoon', 'evening'],
   },
