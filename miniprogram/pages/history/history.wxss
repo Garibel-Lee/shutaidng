@@ -1,0 +1,146 @@
+/* 日期导航 */
+.date-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40rpx;
+  padding: 20rpx 0 30rpx;
+}
+
+.date-nav {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.arrow {
+  font-size: 28rpx;
+  color: #FF8FA0;
+  font-weight: 600;
+}
+
+.date-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 汇总卡片 */
+.summary-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 40rpx 30rpx;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.summary-value {
+  font-size: 60rpx;
+  font-weight: 700;
+  color: #FF6B81;
+}
+
+.summary-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+.summary-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: #eee;
+}
+
+/* 会话列表 */
+.session-list {
+  margin-top: 10rpx;
+}
+
+.session-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.session-method {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #FF8FA0;
+  background: #FFE0E6;
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.session-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.session-body {
+  display: flex;
+  align-items: center;
+  gap: 30rpx;
+}
+
+.session-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6rpx;
+}
+
+.stat-value {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.session-status {
+  margin-left: auto;
+  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.session-delete {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 12rpx 20rpx;
+  font-size: 22rpx;
+  color: #ccc;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 0;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #ccc;
+}

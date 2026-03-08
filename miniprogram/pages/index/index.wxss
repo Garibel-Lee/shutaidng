@@ -1,0 +1,275 @@
+/* 方法选择 */
+.method-card {
+  padding: 24rpx;
+}
+
+.method-tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 16rpx;
+}
+
+.method-tab {
+  padding: 12rpx 28rpx;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  color: #999;
+  background: #f5f5f5;
+  transition: all 0.3s;
+}
+
+.method-tab.active {
+  background: linear-gradient(135deg, #FF8FA0, #FF6B81);
+  color: #fff;
+  font-weight: 500;
+}
+
+.method-desc {
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+/* 时段选择 */
+.period-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 24rpx;
+  margin-top: 20rpx;
+}
+
+.period-tab {
+  width: 80rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 28rpx;
+  color: #999;
+  background: #f5f5f5;
+}
+
+.period-tab.active {
+  background: #FFE0E6;
+  color: #FF6B81;
+  font-weight: 500;
+}
+
+/* 计数显示 */
+.count-display {
+  text-align: center;
+  padding: 40rpx 30rpx;
+}
+
+.count-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+.count-number {
+  font-size: 120rpx;
+  font-weight: 700;
+  color: #FF6B81;
+  line-height: 1;
+}
+
+.count-label {
+  font-size: 32rpx;
+  color: #FF8FA0;
+  font-weight: 500;
+}
+
+.count-sub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+.count-divider {
+  color: #ddd;
+}
+
+.timer-text {
+  font-family: 'Courier New', monospace;
+  font-size: 28rpx;
+}
+
+/* 大按钮 */
+.button-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 40rpx 0;
+}
+
+.big-button {
+  width: 320rpx;
+  height: 320rpx;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #FFB3C1, #FF6B81);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 16rpx 48rpx rgba(255, 107, 129, 0.4);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease;
+}
+
+.big-button.active {
+  background: linear-gradient(145deg, #FF8FA0, #E84666);
+  box-shadow: 0 16rpx 48rpx rgba(255, 107, 129, 0.5);
+}
+
+.big-button.tapping {
+  transform: scale(0.92);
+}
+
+.big-button-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 280rpx;
+  height: 280rpx;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #FF6B81, #FF8FA0);
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.big-button.active .big-button-inner {
+  background: linear-gradient(145deg, #E84666, #FF6B81);
+}
+
+.big-button-text {
+  color: #fff;
+  font-size: 40rpx;
+  font-weight: 600;
+  letter-spacing: 4rpx;
+}
+
+/* 涟漪效果 */
+.ripple {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  animation: ripple-effect 0.6s ease-out;
+}
+
+@keyframes ripple-effect {
+  from {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* 提示文字 */
+.tap-hint {
+  margin-top: 24rpx;
+  font-size: 26rpx;
+  text-align: center;
+  min-height: 40rpx;
+}
+
+.hint-new {
+  color: #4CAF50;
+}
+
+.hint-same {
+  color: #FF9800;
+}
+
+/* 操作栏 */
+.action-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30rpx;
+}
+
+/* 结果卡片 */
+.result-card {
+  border-left: 8rpx solid #FF8FA0;
+}
+
+.result-header {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12rpx 0;
+}
+
+.result-label {
+  color: #999;
+  font-size: 28rpx;
+}
+
+.result-value {
+  font-weight: 600;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.result-status {
+  text-align: center;
+  padding: 16rpx;
+  margin-top: 16rpx;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.status-normal {
+  background: #E8F5E9;
+  color: #4CAF50;
+}
+
+.status-warning {
+  background: #FFF3E0;
+  color: #FF9800;
+}
+
+.status-danger {
+  background: #FFEBEE;
+  color: #F44336;
+}
+
+/* 今日统计 */
+.today-card {
+  text-align: center;
+}
+
+.today-header {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.today-count {
+  font-size: 56rpx;
+  font-weight: 700;
+  color: #FF6B81;
+}
+
+.today-sessions {
+  font-size: 24rpx;
+  color: #ccc;
+  margin-top: 4rpx;
+}

@@ -1,0 +1,42 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/history/history",
+    "pages/stats/stats"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FF8FA0",
+    "navigationBarTitleText": "数胎动",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#FFF5F7"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#FF8FA0",
+    "backgroundColor": "#fff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "计数",
+        "iconPath": "images/tab-count.png",
+        "selectedIconPath": "images/tab-count-active.png"
+      },
+      {
+        "pagePath": "pages/history/history",
+        "text": "记录",
+        "iconPath": "images/tab-history.png",
+        "selectedIconPath": "images/tab-history-active.png"
+      },
+      {
+        "pagePath": "pages/stats/stats",
+        "text": "趋势",
+        "iconPath": "images/tab-stats.png",
+        "selectedIconPath": "images/tab-stats-active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2"
+}

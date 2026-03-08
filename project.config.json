@@ -1,0 +1,33 @@
+{
+  "miniprogramRoot": "miniprogram/",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "preloadBackgroundData": false,
+    "minified": true,
+    "newFeature": true,
+    "autoAudits": false,
+    "coverView": true,
+    "showShadowRootInWxmlPanel": true,
+    "scopeDataCheck": false,
+    "checkInvalidKey": true,
+    "checkSiteMap": true,
+    "uploadWithSourceMap": true,
+    "compileHotReLoad": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "appid": "touristappid",
+  "projectname": "shutaidong",
+  "libVersion": "2.32.3",
+  "condition": {},
+  "srcMiniprogramRoot": "miniprogram/",
+  "compileType": "miniprogram",
+  "description": "数胎动小程序 - 帮助孕妈科学记录胎动"
+}

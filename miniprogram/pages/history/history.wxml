@@ -1,0 +1,55 @@
+<!-- 历史记录页 -->
+<view class="container">
+  <view class="date-header">
+    <view class="date-nav" bindtap="prevDay">
+      <text class="arrow">&#60;</text>
+    </view>
+    <view class="date-text">{{displayDate}}</view>
+    <view class="date-nav" bindtap="nextDay">
+      <text class="arrow">&#62;</text>
+    </view>
+  </view>
+
+  <!-- 当日汇总 -->
+  <view class="card summary-card">
+    <view class="summary-item">
+      <text class="summary-value">{{daySummary.totalCount}}</text>
+      <text class="summary-label">总胎动</text>
+    </view>
+    <view class="summary-divider"></view>
+    <view class="summary-item">
+      <text class="summary-value">{{daySummary.sessionCount}}</text>
+      <text class="summary-label">记录次数</text>
+    </view>
+  </view>
+
+  <!-- 会话列表 -->
+  <view class="session-list" wx:if="{{sessions.length > 0}}">
+    <view class="card session-item" wx:for="{{sessions}}" wx:key="_id">
+      <view class="session-header">
+        <text class="session-method">{{item.methodName}}</text>
+        <text class="session-time">{{item.timeRange}}</text>
+      </view>
+      <view class="session-body">
+        <view class="session-stat">
+          <text class="stat-value">{{item.realCount}}</text>
+          <text class="stat-label">次胎动</text>
+        </view>
+        <view class="session-stat">
+          <text class="stat-value">{{item.durationText}}</text>
+          <text class="stat-label">用时</text>
+        </view>
+        <view class="session-status status-{{item.resultStatus}}">
+          {{item.resultMessage}}
+        </view>
+      </view>
+      <view class="session-delete" catchtap="deleteSession" data-id="{{item._id}}">
+        <text>删除</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:else>
+    <text class="empty-text">当日暂无记录</text>
+  </view>
+</view>

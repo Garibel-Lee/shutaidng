@@ -1,0 +1,62 @@
+/* 全局样式 */
+page {
+  background-color: #FFF5F7;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #333;
+  font-size: 28rpx;
+  line-height: 1.5;
+}
+
+.container {
+  padding: 30rpx;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+/* 通用卡片样式 */
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(255, 143, 160, 0.1);
+}
+
+/* 状态颜色 */
+.status-normal {
+  color: #4CAF50;
+}
+
+.status-warning {
+  color: #FF9800;
+}
+
+.status-danger {
+  color: #F44336;
+}
+
+/* 主按钮样式 */
+.btn-primary {
+  background: linear-gradient(135deg, #FF8FA0, #FF6B81);
+  color: #fff;
+  border: none;
+  border-radius: 50rpx;
+  padding: 20rpx 60rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  box-shadow: 0 8rpx 24rpx rgba(255, 107, 129, 0.3);
+}
+
+.btn-primary:active {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #FF8FA0;
+  border: 2rpx solid #FF8FA0;
+  border-radius: 50rpx;
+  padding: 16rpx 48rpx;
+  font-size: 28rpx;
+}

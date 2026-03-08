@@ -1,0 +1,105 @@
+<!-- 计数主页 -->
+<view class="container">
+  <!-- 方法选择 -->
+  <view class="card method-card">
+    <view class="method-tabs">
+      <view
+        class="method-tab {{currentMethod === 'one_hour' ? 'active' : ''}}"
+        bindtap="switchMethod"
+        data-method="one_hour"
+      >1小时法</view>
+      <view
+        class="method-tab {{currentMethod === 'three_times' ? 'active' : ''}}"
+        bindtap="switchMethod"
+        data-method="three_times"
+      >三次法</view>
+      <view
+        class="method-tab {{currentMethod === 'cardiff' ? 'active' : ''}}"
+        bindtap="switchMethod"
+        data-method="cardiff"
+      >Cardiff法</view>
+    </view>
+    <view class="method-desc">{{methodDesc}}</view>
+
+    <!-- 三次法时段选择 -->
+    <view class="period-tabs" wx:if="{{currentMethod === 'three_times' && !isActive}}">
+      <view
+        class="period-tab {{currentPeriod === 'morning' ? 'active' : ''}}"
+        bindtap="switchPeriod"
+        data-period="morning"
+      >早</view>
+      <view
+        class="period-tab {{currentPeriod === 'afternoon' ? 'active' : ''}}"
+        bindtap="switchPeriod"
+        data-period="afternoon"
+      >中</view>
+      <view
+        class="period-tab {{currentPeriod === 'evening' ? 'active' : ''}}"
+        bindtap="switchPeriod"
+        data-period="evening"
+      >晚</view>
+    </view>
+  </view>
+
+  <!-- 计数显示区 -->
+  <view class="count-display card">
+    <view class="count-main">
+      <text class="count-number">{{realCount}}</text>
+      <text class="count-label">次胎动</text>
+    </view>
+    <view class="count-sub">
+      <text class="tap-count">点击 {{tapCount}} 次</text>
+      <text class="count-divider">|</text>
+      <text class="timer-text">{{timerText}}</text>
+    </view>
+  </view>
+
+  <!-- 大按钮 -->
+  <view class="button-area">
+    <view
+      class="big-button {{isActive ? 'active' : ''}} {{tapping ? 'tapping' : ''}}"
+      bindtap="onTapButton"
+    >
+      <view class="big-button-inner">
+        <text class="big-button-text" wx:if="{{!isActive}}">开始计数</text>
+        <text class="big-button-text" wx:elif="{{isActive}}">宝宝动了</text>
+      </view>
+      <view class="ripple" wx:if="{{tapping}}"></view>
+    </view>
+
+    <!-- 提示文字 -->
+    <view class="tap-hint" wx:if="{{isActive && lastTapHint}}">
+      <text class="{{lastTapIsNew ? 'hint-new' : 'hint-same'}}">{{lastTapHint}}</text>
+    </view>
+  </view>
+
+  <!-- 操作栏 -->
+  <view class="action-bar" wx:if="{{isActive}}">
+    <button class="btn-secondary" bindtap="onEndSession">结束计数</button>
+  </view>
+
+  <!-- 结果展示 -->
+  <view class="result-card card" wx:if="{{showResult}}">
+    <view class="result-header">本次计数结果</view>
+    <view class="result-content">
+      <view class="result-row">
+        <text class="result-label">真实胎动</text>
+        <text class="result-value">{{resultCount}} 次</text>
+      </view>
+      <view class="result-row">
+        <text class="result-label">用时</text>
+        <text class="result-value">{{resultDuration}}</text>
+      </view>
+      <view class="result-status status-{{resultStatus}}">
+        {{resultMessage}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日统计 -->
+  <view class="card today-card" wx:if="{{todayCount > 0}}">
+    <view class="today-header">今日胎动</view>
+    <view class="today-count">{{todayCount}} 次</view>
+    <view class="today-sessions">共 {{todaySessions}} 次记录</view>
+  </view>
+</view>

@@ -1,0 +1,85 @@
+<!-- 趋势统计页 -->
+<view class="container">
+  <!-- 时间范围切换 -->
+  <view class="card range-card">
+    <view class="range-tabs">
+      <view
+        class="range-tab {{range === 7 ? 'active' : ''}}"
+        bindtap="switchRange"
+        data-range="7"
+      >近7天</view>
+      <view
+        class="range-tab {{range === 14 ? 'active' : ''}}"
+        bindtap="switchRange"
+        data-range="14"
+      >近14天</view>
+      <view
+        class="range-tab {{range === 30 ? 'active' : ''}}"
+        bindtap="switchRange"
+        data-range="30"
+      >近30天</view>
+    </view>
+  </view>
+
+  <!-- 统计概览 -->
+  <view class="card overview-card">
+    <view class="overview-row">
+      <view class="overview-item">
+        <text class="overview-value">{{overview.avgCount}}</text>
+        <text class="overview-label">日均胎动</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-value">{{overview.maxCount}}</text>
+        <text class="overview-label">最高</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-value">{{overview.minCount}}</text>
+        <text class="overview-label">最低</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-value">{{overview.totalDays}}</text>
+        <text class="overview-label">记录天数</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 柱状图 -->
+  <view class="card chart-card">
+    <view class="chart-title">每日胎动趋势</view>
+    <view class="chart-container">
+      <view class="chart-bars">
+        <view
+          class="chart-bar-wrapper"
+          wx:for="{{chartData}}"
+          wx:key="date"
+        >
+          <view class="chart-value">{{item.totalCount || ''}}</view>
+          <view
+            class="chart-bar"
+            style="height: {{item.barHeight}}rpx"
+          >
+            <view class="chart-bar-fill {{item.totalCount < 3 && item.totalCount > 0 ? 'bar-warning' : ''}}"></view>
+          </view>
+          <view class="chart-date">{{item.shortDate}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 每日明细 -->
+  <view class="card detail-card">
+    <view class="detail-title">每日明细</view>
+    <view class="detail-list">
+      <view class="detail-item" wx:for="{{dailyStats}}" wx:key="date">
+        <text class="detail-date">{{item.date}}</text>
+        <view class="detail-bar-bg">
+          <view
+            class="detail-bar-fill"
+            style="width: {{item.barWidth}}%"
+          ></view>
+        </view>
+        <text class="detail-count">{{item.totalCount}}次</text>
+      </view>
+    </view>
+  </view>
+</view>
