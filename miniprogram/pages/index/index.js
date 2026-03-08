@@ -234,6 +234,13 @@ Page({
 
     this.setData({
       isActive: false,
+      // 计数卡片归零
+      taps: [],
+      tapCount: 0,
+      realCount: 0,
+      timerText: '00:00',
+      sessionId: null,
+      // 展示结果
       showResult: true,
       resultCount: realCount,
       resultDuration: formatDuration(duration),

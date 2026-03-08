@@ -277,9 +277,9 @@
 
 .big-button-text {
   color: #fff;
-  font-size: 40rpx;
+  font-size: 50rpx;
   font-weight: 600;
-  letter-spacing: 4rpx;
+  letter-spacing: 6rpx;
 }
 
 .big-button-text-active {
