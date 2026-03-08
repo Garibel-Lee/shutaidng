@@ -238,8 +238,8 @@
 }
 
 .big-button {
-  width: 400rpx;
-  height: 400rpx;
+  width: 460rpx;
+  height: 460rpx;
   border-radius: 50%;
   background: linear-gradient(145deg, #FFB3C1, #FF6B81);
   display: flex;
@@ -264,8 +264,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 360rpx;
-  height: 360rpx;
+  width: 420rpx;
+  height: 420rpx;
   border-radius: 50%;
   background: linear-gradient(145deg, #FF6B81, #FF8FA0);
   border: 4rpx solid rgba(255, 255, 255, 0.3);
@@ -314,9 +314,9 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.8);
-  padding: 24rpx 56rpx;
-  border-radius: 44rpx;
-  font-size: 36rpx;
+  padding: 28rpx 64rpx;
+  border-radius: 48rpx;
+  font-size: 40rpx;
   font-weight: 600;
   white-space: nowrap;
   z-index: 100;
