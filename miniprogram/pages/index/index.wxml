@@ -9,10 +9,10 @@
         data-method="one_hour"
       >1小时法</view>
       <view
-        class="method-tab {{currentMethod === 'three_times' ? 'active' : ''}}"
+        class="method-tab {{currentMethod === 'two_hour' ? 'active' : ''}}"
         bindtap="switchMethod"
-        data-method="three_times"
-      >三次法</view>
+        data-method="two_hour"
+      >2小时法</view>
       <view
         class="method-tab {{currentMethod === 'cardiff' ? 'active' : ''}}"
         bindtap="switchMethod"
@@ -21,24 +21,6 @@
     </view>
     <view class="method-desc">{{methodDesc}}</view>
 
-    <!-- 三次法时段选择 -->
-    <view class="period-tabs" wx:if="{{currentMethod === 'three_times' && !isActive}}">
-      <view
-        class="period-tab {{currentPeriod === 'morning' ? 'active' : ''}}"
-        bindtap="switchPeriod"
-        data-period="morning"
-      >早</view>
-      <view
-        class="period-tab {{currentPeriod === 'afternoon' ? 'active' : ''}}"
-        bindtap="switchPeriod"
-        data-period="afternoon"
-      >中</view>
-      <view
-        class="period-tab {{currentPeriod === 'evening' ? 'active' : ''}}"
-        bindtap="switchPeriod"
-        data-period="evening"
-      >晚</view>
-    </view>
   </view>
 
   <!-- 计数显示区 -->

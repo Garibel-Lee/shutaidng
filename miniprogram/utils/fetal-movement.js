@@ -60,12 +60,11 @@ const METHODS = {
     description: '选一个固定时段数1小时，正常>=3次',
     normalThreshold: 3,
   },
-  three_times: {
-    name: '三次法',
-    duration: 2 * 60 * 60 * 1000, // 每次2小时
-    description: '早中晚各数2小时，3次之和x2=12小时估值，正常>=30次',
-    normalThreshold: 10, // 单次>=10次为正常（3次之和>=30）
-    periods: ['morning', 'afternoon', 'evening'],
+  two_hour: {
+    name: '2小时法',
+    duration: 2 * 60 * 60 * 1000,
+    description: '选一个固定时段数2小时，正常>=3次',
+    normalThreshold: 3,
   },
   cardiff: {
     name: 'Cardiff法',
@@ -104,14 +103,11 @@ function evaluateResult(method, realCount, duration) {
     return { status: 'warning', message: '未达到10次，建议咨询医生' };
   }
 
-  if (method === 'three_times') {
-    if (realCount >= 10) {
-      return { status: 'normal', message: '本次胎动正常' };
+  if (method === 'two_hour') {
+    if (realCount >= 3) {
+      return { status: 'normal', message: '胎动正常' };
     }
-    if (realCount >= 5) {
-      return { status: 'warning', message: '胎动偏少，建议关注' };
-    }
-    return { status: 'danger', message: '胎动过少，建议尽快咨询医生' };
+    return { status: 'warning', message: '胎动偏少，建议关注' };
   }
 
   return { status: 'unknown', message: '' };

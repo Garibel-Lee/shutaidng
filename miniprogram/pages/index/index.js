@@ -6,7 +6,6 @@ Page({
     // 方法相关
     currentMethod: 'one_hour',
     methodDesc: '',
-    currentPeriod: 'morning',
 
     // 计数状态
     isActive: false,
@@ -68,11 +67,6 @@ Page({
     this.updateMethodDesc();
   },
 
-  switchPeriod(e) {
-    const period = e.currentTarget.dataset.period;
-    this.setData({ currentPeriod: period });
-  },
-
   updateMethodDesc() {
     const config = METHODS[this.data.currentMethod];
     this.setData({ methodDesc: config ? config.description : '' });
@@ -121,7 +115,6 @@ Page({
     try {
       const sessionId = await dbUtil.createSession({
         method: this.data.currentMethod,
-        period: this.data.currentMethod === 'three_times' ? this.data.currentPeriod : null,
       });
 
       this._startTime = Date.now();
