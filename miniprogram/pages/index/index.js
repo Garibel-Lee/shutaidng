@@ -167,6 +167,13 @@ Page({
       lastTapIsNew: isNew,
     });
 
+    // 提示3秒后自动消失
+    if (this._hintTimer) clearTimeout(this._hintTimer);
+    this._hintTimer = setTimeout(() => {
+      this.setData({ lastTapHint: '' });
+      this._hintTimer = null;
+    }, 3000);
+
     // 云端同步（不阻塞UI）
     this.syncToCloud(now, realCount);
 
