@@ -25,6 +25,7 @@ Page({
     tapping: false,
     lastTapHint: '',
     lastTapIsNew: true,
+    showFloatToast: false,
 
     // 结果
     showResult: false,
@@ -165,14 +166,17 @@ Page({
       realCount,
       lastTapHint: isNew ? '+1 新胎动!' : '同一次胎动（5分钟内）',
       lastTapIsNew: isNew,
+      showFloatToast: true,
     });
 
-    // 提示3秒后自动消失
+    // 悬浮提示 2 秒后消失
     if (this._hintTimer) clearTimeout(this._hintTimer);
     this._hintTimer = setTimeout(() => {
-      this.setData({ lastTapHint: '' });
+      this.setData({ showFloatToast: false });
+      // 动画结束后清空文字
+      setTimeout(() => this.setData({ lastTapHint: '' }), 300);
       this._hintTimer = null;
-    }, 3000);
+    }, 2000);
 
     // 云端同步（不阻塞UI）
     this.syncToCloud(now, realCount);

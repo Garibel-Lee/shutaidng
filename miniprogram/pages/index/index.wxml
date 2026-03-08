@@ -89,14 +89,14 @@
     >
       <view class="big-button-inner">
         <text class="big-button-text" wx:if="{{!isActive}}">开始计数</text>
-        <text class="big-button-text" wx:elif="{{isActive}}">宝宝动了</text>
+        <text class="big-button-text big-button-text-active" wx:elif="{{isActive}}">宝宝动了</text>
       </view>
       <view class="ripple" wx:if="{{tapping}}"></view>
     </view>
 
-    <!-- 提示文字 -->
-    <view class="tap-hint" wx:if="{{isActive && lastTapHint}}">
-      <text class="{{lastTapIsNew ? 'hint-new' : 'hint-same'}}">{{lastTapHint}}</text>
+    <!-- 悬浮提示 -->
+    <view class="float-toast {{showFloatToast ? 'show' : ''}} {{lastTapIsNew ? 'toast-new' : 'toast-same'}}" wx:if="{{lastTapHint}}">
+      <text>{{lastTapHint}}</text>
     </view>
   </view>
 
