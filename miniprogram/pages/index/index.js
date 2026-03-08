@@ -164,7 +164,7 @@ Page({
       taps,
       tapCount: taps.length,
       realCount,
-      lastTapHint: isNew ? '+1 新胎动!' : '同一次胎动（5分钟内）',
+      lastTapHint: isNew ? '+1 胎动' : '5分钟内 不计数',
       lastTapIsNew: isNew,
       showFloatToast: true,
     });

@@ -282,7 +282,7 @@
 }
 
 .big-button-text-active {
-  font-size: 52rpx;
+  font-size: 62rpx;
   letter-spacing: 6rpx;
 }
 
@@ -310,18 +310,19 @@
 /* 悬浮提示 toast */
 .float-toast {
   position: fixed;
-  top: 35%;
+  bottom: 260rpx;
   left: 50%;
   transform: translateX(-50%) translateY(20rpx);
-  padding: 16rpx 40rpx;
+  padding: 18rpx 48rpx;
   border-radius: 40rpx;
-  font-size: 30rpx;
+  font-size: 28rpx;
   font-weight: 500;
+  white-space: nowrap;
   z-index: 100;
   opacity: 0;
   transition: all 0.3s ease;
   pointer-events: none;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
 }
 
 .float-toast.show {
