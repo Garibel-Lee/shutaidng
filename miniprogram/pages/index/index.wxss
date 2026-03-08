@@ -234,11 +234,12 @@
   flex-direction: column;
   align-items: center;
   margin: 40rpx 0;
+  position: relative;
 }
 
 .big-button {
-  width: 320rpx;
-  height: 320rpx;
+  width: 400rpx;
+  height: 400rpx;
   border-radius: 50%;
   background: linear-gradient(145deg, #FFB3C1, #FF6B81);
   display: flex;
@@ -263,8 +264,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 280rpx;
-  height: 280rpx;
+  width: 360rpx;
+  height: 360rpx;
   border-radius: 50%;
   background: linear-gradient(145deg, #FF6B81, #FF8FA0);
   border: 4rpx solid rgba(255, 255, 255, 0.3);
@@ -282,7 +283,7 @@
 }
 
 .big-button-text-active {
-  font-size: 62rpx;
+  font-size: 50rpx;
   letter-spacing: 6rpx;
 }
 
@@ -307,27 +308,27 @@
   }
 }
 
-/* 悬浮提示 toast */
+/* 悬浮提示 toast - 覆盖按钮中部 */
 .float-toast {
-  position: fixed;
-  bottom: 260rpx;
+  position: absolute;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%) translateY(20rpx);
-  padding: 18rpx 48rpx;
-  border-radius: 40rpx;
-  font-size: 28rpx;
-  font-weight: 500;
+  transform: translate(-50%, -50%) scale(0.8);
+  padding: 24rpx 56rpx;
+  border-radius: 44rpx;
+  font-size: 36rpx;
+  font-weight: 600;
   white-space: nowrap;
   z-index: 100;
   opacity: 0;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   pointer-events: none;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.15);
 }
 
 .float-toast.show {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .float-toast.toast-new {
