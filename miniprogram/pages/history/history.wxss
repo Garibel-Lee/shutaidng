@@ -4,12 +4,12 @@
   align-items: center;
   justify-content: center;
   gap: 40rpx;
-  padding: 20rpx 0 30rpx;
+  padding: 24rpx 0 32rpx;
 }
 
 .date-nav {
-  width: 60rpx;
-  height: 60rpx;
+  width: 68rpx;
+  height: 68rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,13 +19,13 @@
 }
 
 .arrow {
-  font-size: 28rpx;
+  font-size: 34rpx;
   color: #FF8FA0;
   font-weight: 600;
 }
 
 .date-text {
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: 600;
   color: #333;
 }
@@ -35,7 +35,7 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 40rpx 30rpx;
+  padding: 44rpx 32rpx;
 }
 
 .summary-item {
@@ -45,26 +45,26 @@
 }
 
 .summary-value {
-  font-size: 60rpx;
+  font-size: 64rpx;
   font-weight: 700;
   color: #FF6B81;
 }
 
 .summary-label {
-  font-size: 24rpx;
+  font-size: 30rpx;
   color: #999;
-  margin-top: 8rpx;
+  margin-top: 10rpx;
 }
 
 .summary-divider {
   width: 2rpx;
-  height: 60rpx;
+  height: 64rpx;
   background: #eee;
 }
 
 /* 会话列表 */
 .session-list {
-  margin-top: 10rpx;
+  margin-top: 12rpx;
 }
 
 .session-item {
@@ -76,59 +76,59 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16rpx;
+  margin-bottom: 18rpx;
 }
 
 .session-method {
-  font-size: 28rpx;
+  font-size: 30rpx;
   font-weight: 600;
   color: #FF8FA0;
   background: #FFE0E6;
-  padding: 4rpx 16rpx;
-  border-radius: 8rpx;
+  padding: 6rpx 20rpx;
+  border-radius: 10rpx;
 }
 
 .session-time {
-  font-size: 24rpx;
+  font-size: 28rpx;
   color: #999;
 }
 
 .session-body {
   display: flex;
   align-items: center;
-  gap: 30rpx;
+  gap: 32rpx;
 }
 
 .session-stat {
   display: flex;
   align-items: baseline;
-  gap: 6rpx;
+  gap: 8rpx;
 }
 
 .stat-value {
-  font-size: 36rpx;
+  font-size: 40rpx;
   font-weight: 600;
   color: #333;
 }
 
 .stat-label {
-  font-size: 22rpx;
+  font-size: 28rpx;
   color: #999;
 }
 
 .session-status {
   margin-left: auto;
-  font-size: 24rpx;
-  padding: 6rpx 16rpx;
-  border-radius: 8rpx;
+  font-size: 28rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 10rpx;
 }
 
 .session-delete {
   position: absolute;
   right: 0;
   top: 0;
-  padding: 12rpx 20rpx;
-  font-size: 22rpx;
+  padding: 14rpx 22rpx;
+  font-size: 28rpx;
   color: #ccc;
 }
 
@@ -141,6 +141,6 @@
 }
 
 .empty-text {
-  font-size: 28rpx;
+  font-size: 32rpx;
   color: #ccc;
 }
