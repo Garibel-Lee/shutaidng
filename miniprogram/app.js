@@ -17,6 +17,7 @@ App({
   globalData: {
     openid: null,
     logged: false,
+    nickname: '',
   },
 
   // 登录 Promise，供页面 await
@@ -31,6 +32,8 @@ App({
         this.globalData.openid = openid;
         this.globalData.logged = true;
         console.log('登录成功, openid:', openid);
+        // 加载用户昵称
+        this.loadNickname();
         return openid;
       })
       .catch((err) => {
@@ -51,5 +54,20 @@ App({
       return this.globalData.openid;
     }
     return this.login();
+  },
+
+  /**
+   * 从云端加载用户昵称
+   */
+  async loadNickname() {
+    try {
+      const db = wx.cloud.database();
+      const res = await db.collection('users').limit(1).get();
+      if (res.data.length > 0 && res.data[0].nickname) {
+        this.globalData.nickname = res.data[0].nickname;
+      }
+    } catch (err) {
+      console.error('加载昵称失败:', err);
+    }
   },
 });

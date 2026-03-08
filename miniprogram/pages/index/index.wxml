@@ -1,5 +1,37 @@
 <!-- 计数主页 -->
 <view class="container">
+  <!-- 用户昵称 -->
+  <view class="card user-card">
+    <view class="user-info" wx:if="{{nickname}}">
+      <text class="user-greeting">{{nickname}}，记得数胎动哦</text>
+      <text class="user-edit" bindtap="onEditNickname">修改</text>
+    </view>
+    <view class="user-info" wx:else>
+      <text class="user-greeting">请设置昵称</text>
+      <button class="nickname-btn" bindtap="onEditNickname">设置昵称</button>
+    </view>
+  </view>
+
+  <!-- 昵称输入弹窗 -->
+  <view class="nickname-modal" wx:if="{{showNicknameModal}}">
+    <view class="nickname-mask" bindtap="onCancelNickname"></view>
+    <view class="nickname-dialog">
+      <view class="nickname-title">设置昵称</view>
+      <input
+        class="nickname-input"
+        type="nickname"
+        placeholder="请输入昵称"
+        value="{{nicknameInput}}"
+        bindinput="onNicknameInput"
+        bindblur="onNicknameBlur"
+      />
+      <view class="nickname-actions">
+        <button class="btn-secondary" bindtap="onCancelNickname">取消</button>
+        <button class="btn-primary nickname-confirm" bindtap="onConfirmNickname">确定</button>
+      </view>
+    </view>
+  </view>
+
   <!-- 方法选择 -->
   <view class="card method-card">
     <view class="method-tabs">

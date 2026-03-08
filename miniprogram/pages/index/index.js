@@ -3,6 +3,11 @@ const dbUtil = require('../../utils/db');
 
 Page({
   data: {
+    // 用户
+    nickname: '',
+    showNicknameModal: false,
+    nicknameInput: '',
+
     // 方法相关
     currentMethod: 'one_hour',
     methodDesc: '',
@@ -44,6 +49,17 @@ Page({
   async onShow() {
     const app = getApp();
     await app.ensureLogin();
+    // 加载昵称
+    if (app.globalData.nickname) {
+      this.setData({ nickname: app.globalData.nickname });
+    } else {
+      // 等一下再试（登录后异步加载）
+      setTimeout(() => {
+        if (app.globalData.nickname) {
+          this.setData({ nickname: app.globalData.nickname });
+        }
+      }, 1000);
+    }
     this.loadTodayStats();
     this.checkActiveSession();
   },
@@ -54,6 +70,44 @@ Page({
 
   onHide() {
     // 不清除计时器，保持后台运行
+  },
+
+  // --- 昵称设置 ---
+  onEditNickname() {
+    this.setData({ showNicknameModal: true, nicknameInput: this.data.nickname });
+  },
+
+  onNicknameInput(e) {
+    this.setData({ nicknameInput: e.detail.value });
+  },
+
+  onNicknameBlur(e) {
+    // 微信 nickname 类型 input blur 时返回真实昵称
+    if (e.detail.value) {
+      this.setData({ nicknameInput: e.detail.value });
+    }
+  },
+
+  onCancelNickname() {
+    this.setData({ showNicknameModal: false });
+  },
+
+  async onConfirmNickname() {
+    const nickname = this.data.nicknameInput.trim();
+    if (!nickname) {
+      wx.showToast({ title: '请输入昵称', icon: 'none' });
+      return;
+    }
+    try {
+      await dbUtil.saveNickname(nickname);
+      const app = getApp();
+      app.globalData.nickname = nickname;
+      this.setData({ nickname, showNicknameModal: false });
+      wx.showToast({ title: '设置成功' });
+    } catch (err) {
+      console.error('保存昵称失败:', err);
+      wx.showToast({ title: '保存失败', icon: 'none' });
+    }
   },
 
   // --- 方法切换 ---

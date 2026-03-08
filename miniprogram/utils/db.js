@@ -13,6 +13,34 @@ const db = wx.cloud.database();
 const _ = db.command;
 
 const COLLECTION = 'sessions';
+const USER_COLLECTION = 'users';
+
+// --- 用户相关 ---
+
+/**
+ * 获取当前用户信息
+ */
+async function getUserInfo() {
+  const res = await db.collection(USER_COLLECTION)
+    .limit(1)
+    .get();
+  return res.data.length > 0 ? res.data[0] : null;
+}
+
+/**
+ * 保存用户昵称
+ */
+async function saveNickname(nickname) {
+  const user = await getUserInfo();
+  if (user) {
+    return db.collection(USER_COLLECTION).doc(user._id).update({
+      data: { nickname, updateTime: db.serverDate() },
+    });
+  }
+  return db.collection(USER_COLLECTION).add({
+    data: { nickname, createTime: db.serverDate(), updateTime: db.serverDate() },
+  });
+}
 
 /**
  * 创建新会话
@@ -163,6 +191,8 @@ function formatDateKey(date) {
 
 module.exports = {
   db,
+  getUserInfo,
+  saveNickname,
   createSession,
   addTap,
   endSession,
