@@ -71,13 +71,12 @@ async function saveNickname(nickname) {
  */
 async function createSession(data) {
   await ensureOpenid();
-  const { method } = data;
-  const now = Date.now();
+  const { method, startTime } = data;
 
   const res = await db.collection(COLLECTION).add({
     data: {
       method,
-      startTime: now,
+      startTime: startTime || Date.now(),
       endTime: null,
       duration: 0,
       taps: [],

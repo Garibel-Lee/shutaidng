@@ -42,7 +42,8 @@ Page({
   // 计时器相关
   _startTime: 0,
   _timer: null,
-  _duration: 0,
+  // 云端同步锁，防止 onShow 覆盖本地最新状态
+  _syncing: false,
 
   onLoad() {
     this.updateMethodDesc();
@@ -51,19 +52,21 @@ Page({
   async onShow() {
     const app = getApp();
     await app.ensureLogin();
-    // 等待昵称加载完成
     await app.loadNickname();
 
     if (app.globalData.nickname) {
       this.setData({ nickname: app.globalData.nickname, showLoginGate: false });
     } else {
-      // 未设置昵称，强制显示登录引导
       this.setData({ showLoginGate: true, nickname: '' });
     }
 
-    // 每次进入都刷新数据
     this.loadTodayStats();
-    this.checkActiveSession();
+
+    // 仅在本地没有活跃会话时，才从云端恢复
+    // 避免云端旧数据覆盖本地最新状态
+    if (!this.data.isActive) {
+      this.checkActiveSession();
+    }
   },
 
   onUnload() {
@@ -71,7 +74,7 @@ Page({
   },
 
   onHide() {
-    // 不清除计时器，保持后台运行
+    // 不清除计时器，保持后台计时
   },
 
   // --- 首次登录设置昵称 ---
@@ -136,7 +139,7 @@ Page({
   },
 
   // --- 核心：点击按钮 ---
-  async onTapButton() {
+  onTapButton() {
     // 未登录拦截
     if (!this.data.nickname) {
       this.setData({ showLoginGate: true });
@@ -145,7 +148,7 @@ Page({
 
     // 如果尚未开始，先启动会话
     if (!this.data.isActive) {
-      await this.startSession();
+      this.startSession();
       return;
     }
 
@@ -159,7 +162,7 @@ Page({
     this.setData({ tapping: true });
     setTimeout(() => this.setData({ tapping: false }), 300);
 
-    // 更新界面
+    // 更新界面（本地状态为唯一数据源）
     this.setData({
       taps,
       tapCount: taps.length,
@@ -173,12 +176,11 @@ Page({
     if (this._hintTimer) clearTimeout(this._hintTimer);
     this._hintTimer = setTimeout(() => {
       this.setData({ showFloatToast: false });
-      // 动画结束后清空文字
       setTimeout(() => this.setData({ lastTapHint: '' }), 300);
       this._hintTimer = null;
     }, 2000);
 
-    // 云端同步（不阻塞UI）
+    // 云端同步（不阻塞UI，不回读）
     this.syncToCloud(now, realCount);
 
     // Cardiff法：达到目标自动结束
@@ -192,11 +194,15 @@ Page({
     wx.showLoading({ title: '准备中...' });
 
     try {
+      // 先记录本地时间，确保和云端 startTime 一致
+      const now = Date.now();
+
       const sessionId = await dbUtil.createSession({
         method: this.data.currentMethod,
+        startTime: now,
       });
 
-      this._startTime = Date.now();
+      this._startTime = now;
 
       this.setData({
         isActive: true,
@@ -209,6 +215,8 @@ Page({
         lastTapHint: '',
       });
 
+      // 确保只有一个定时器
+      this.clearTimer();
       this.startTimer();
       wx.hideLoading();
 
@@ -224,23 +232,21 @@ Page({
   async onEndSession() {
     if (!this.data.isActive) return;
 
+    this.clearTimer();
+
     const duration = Date.now() - this._startTime;
     const { realCount, sessionId, currentMethod } = this.data;
-
-    this.clearTimer();
 
     // 评估结果
     const result = evaluateResult(currentMethod, realCount, duration);
 
     this.setData({
       isActive: false,
-      // 计数卡片归零
       taps: [],
       tapCount: 0,
       realCount: 0,
       timerText: '00:00',
       sessionId: null,
-      // 展示结果
       showResult: true,
       resultCount: realCount,
       resultDuration: formatDuration(duration),
@@ -255,20 +261,21 @@ Page({
       console.error('结束会话同步失败:', err);
     }
 
-    // 刷新今日统计
     this.loadTodayStats();
   },
 
-  // --- 云端同步 ---
+  // --- 云端同步（仅写入，不回读） ---
   async syncToCloud(tapTime, realCount) {
     const { sessionId } = this.data;
     if (!sessionId) return;
 
+    this._syncing = true;
     try {
       await dbUtil.addTap(sessionId, tapTime, realCount);
     } catch (err) {
       console.error('同步点击失败:', err);
     }
+    this._syncing = false;
   },
 
   // --- 计时器 ---
@@ -322,21 +329,34 @@ Page({
     }
   },
 
-  // --- 恢复活跃会话 ---
+  // --- 恢复活跃会话（仅在本地无活跃会话时调用） ---
   async checkActiveSession() {
+    // 本地有活跃会话，不从云端覆盖
+    if (this.data.isActive) return;
+
     try {
       const session = await dbUtil.getActiveSession();
       if (session) {
+        // 再次检查，防止异步期间状态变化
+        if (this.data.isActive) return;
+
         this._startTime = session.startTime;
+
+        // 用云端数据恢复本地状态
+        const taps = session.taps || [];
+        const realCount = calcRealCount(taps);
+
         this.setData({
           isActive: true,
           sessionId: session._id,
           currentMethod: session.method,
-          taps: session.taps || [],
-          tapCount: (session.taps || []).length,
-          realCount: session.realCount || 0,
+          taps,
+          tapCount: taps.length,
+          realCount,
         });
         this.updateMethodDesc();
+        // 先清再启，确保只有一个定时器
+        this.clearTimer();
         this.startTimer();
       }
     } catch (err) {
