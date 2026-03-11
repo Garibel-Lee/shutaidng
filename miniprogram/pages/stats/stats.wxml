@@ -60,7 +60,7 @@
         </view>
       </view>
     </view>
-    <view class="chart-container">
+    <scroll-view class="chart-container" scroll-x="true" enhanced="true" show-scrollbar="true">
       <view class="chart-bars">
         <view
           class="chart-bar-wrapper"
@@ -82,7 +82,7 @@
           <view class="chart-date">{{item.shortDate}}</view>
         </view>
       </view>
-    </view>
+    </scroll-view>
   </view>
 
   <!-- 每日明细 -->
