@@ -4,9 +4,10 @@ Page({
   data: {
     range: 7,
     overview: {
-      avgCount: 0,
-      maxCount: 0,
-      minCount: 0,
+      totalCount: 0,
+      avgPerSession: 0,
+      maxAvgPerSession: 0,
+      minAvgPerSession: 0,
       totalDays: 0,
     },
     chartData: [],
@@ -16,7 +17,6 @@ Page({
   async onShow() {
     const app = getApp();
     await app.ensureLogin();
-    // 每次切换到此页都重新加载数据
     await this.loadStats();
   },
 
@@ -32,27 +32,38 @@ Page({
     try {
       const stats = await dbUtil.getDailyStats(range);
 
-      // 计算概览
+      // 有记录的天
       const activeDays = stats.filter((d) => d.totalCount > 0);
-      const counts = activeDays.map((d) => d.totalCount);
-      const maxCount = counts.length > 0 ? Math.max(...counts) : 0;
-      const minCount = counts.length > 0 ? Math.min(...counts) : 0;
-      // 日均胎动 = 总次数 / 有记录的天数
-      const totalCount = counts.length > 0 ? counts.reduce((a, b) => a + b, 0) : 0;
-      const avgCount = counts.length > 0
-        ? Math.round(totalCount / counts.length)
-        : 0;
-      // 日均次数 = 总次数 / 当日数胎动次数（即总会话数）
+
+      // 胎动总次数
+      const totalCount = activeDays.reduce((a, d) => a + d.totalCount, 0);
+
+      // 总会话数（用于次均胎动）
       const totalSessions = activeDays.reduce((a, d) => a + d.sessions, 0);
       const avgPerSession = totalSessions > 0
         ? (totalCount / totalSessions).toFixed(1)
         : 0;
 
-      // 柱状图数据
-      const maxBarHeight = 240; // rpx
+      // 每天的次均胎动
+      const dailyAvgs = activeDays
+        .filter((d) => d.sessions > 0)
+        .map((d) => d.totalCount / d.sessions);
+
+      const maxAvgPerSession = dailyAvgs.length > 0
+        ? Math.round(Math.max(...dailyAvgs) * 10) / 10
+        : 0;
+      const minAvgPerSession = dailyAvgs.length > 0
+        ? Math.round(Math.min(...dailyAvgs) * 10) / 10
+        : 0;
+
+      // 柱状图（用每日总次数）
+      const maxDayCount = activeDays.length > 0
+        ? Math.max(...activeDays.map((d) => d.totalCount))
+        : 0;
+      const maxBarHeight = 240;
       const chartData = stats.map((d) => {
-        const barHeight = maxCount > 0
-          ? Math.max(4, Math.round((d.totalCount / maxCount) * maxBarHeight))
+        const barHeight = maxDayCount > 0
+          ? Math.max(4, Math.round((d.totalCount / maxDayCount) * maxBarHeight))
           : 4;
         const dateParts = d.date.split('-');
         return {
@@ -62,18 +73,18 @@ Page({
         };
       });
 
-      // 明细（倒序显示）
+      // 明细（倒序）
       const dailyStats = [...stats].reverse().map((d) => ({
         ...d,
-        barWidth: maxCount > 0 ? Math.round((d.totalCount / maxCount) * 100) : 0,
+        barWidth: maxDayCount > 0 ? Math.round((d.totalCount / maxDayCount) * 100) : 0,
       }));
 
       this.setData({
         overview: {
-          avgCount,
+          totalCount,
           avgPerSession,
-          maxCount,
-          minCount,
+          maxAvgPerSession,
+          minAvgPerSession,
           totalDays: activeDays.length,
         },
         chartData,

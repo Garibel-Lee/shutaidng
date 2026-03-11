@@ -25,20 +25,20 @@
   <view class="card overview-card">
     <view class="overview-row">
       <view class="overview-item">
-        <text class="overview-value">{{overview.avgCount}}</text>
-        <text class="overview-label">日均胎动</text>
+        <text class="overview-value">{{overview.totalCount}}</text>
+        <text class="overview-label">胎动总次数</text>
       </view>
       <view class="overview-item">
         <text class="overview-value">{{overview.avgPerSession}}</text>
         <text class="overview-label">次均胎动</text>
       </view>
       <view class="overview-item">
-        <text class="overview-value">{{overview.maxCount}}</text>
-        <text class="overview-label">最高</text>
+        <text class="overview-value">{{overview.maxAvgPerSession}}</text>
+        <text class="overview-label">单日最高次均</text>
       </view>
       <view class="overview-item">
-        <text class="overview-value">{{overview.minCount}}</text>
-        <text class="overview-label">最低</text>
+        <text class="overview-value">{{overview.minAvgPerSession}}</text>
+        <text class="overview-label">单日最低次均</text>
       </view>
       <view class="overview-item">
         <text class="overview-value">{{overview.totalDays}}</text>
