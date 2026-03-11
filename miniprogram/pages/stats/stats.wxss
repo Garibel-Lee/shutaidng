@@ -41,10 +41,6 @@
   width: 33.3%;
 }
 
-.overview-item-half {
-  width: 50%;
-}
-
 .overview-value {
   font-size: 48rpx;
   font-weight: 700;

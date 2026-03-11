@@ -96,6 +96,7 @@ Page({
       this.setData({
         overview: {
           totalCount,
+          totalSessions,
           avgPerSession,
           maxAvgPerSession,
           minAvgPerSession,
