@@ -29,6 +29,10 @@
         <text class="overview-label">日均胎动</text>
       </view>
       <view class="overview-item">
+        <text class="overview-value">{{overview.avgPerSession}}</text>
+        <text class="overview-label">次均胎动</text>
+      </view>
+      <view class="overview-item">
         <text class="overview-value">{{overview.maxCount}}</text>
         <text class="overview-label">最高</text>
       </view>

@@ -21,6 +21,9 @@ Page({
     realCount: 0,
     timerText: '00:00',
 
+    // 页面就绪标记：会话恢复完成前，阻止用户操作
+    ready: false,
+
     // 按钮效果
     tapping: false,
     lastTapHint: '',
@@ -42,8 +45,6 @@ Page({
   // 计时器相关
   _startTime: 0,
   _timer: null,
-  // 云端同步锁，防止 onShow 覆盖本地最新状态
-  _syncing: false,
 
   onLoad() {
     this.updateMethodDesc();
@@ -63,10 +64,12 @@ Page({
     this.loadTodayStats();
 
     // 仅在本地没有活跃会话时，才从云端恢复
-    // 避免云端旧数据覆盖本地最新状态
     if (!this.data.isActive) {
-      this.checkActiveSession();
+      // **必须 await**，恢复完成前不允许用户操作
+      await this.checkActiveSession();
     }
+    // 会话检查完毕，页面就绪
+    this.setData({ ready: true });
   },
 
   onUnload() {
@@ -75,6 +78,8 @@ Page({
 
   onHide() {
     // 不清除计时器，保持后台计时
+    // 标记未就绪，下次 onShow 会重新检查
+    this.setData({ ready: false });
   },
 
   // --- 首次登录设置昵称 ---
@@ -146,6 +151,12 @@ Page({
       return;
     }
 
+    // 页面未就绪（会话恢复中），阻止操作
+    if (!this.data.ready) {
+      wx.showToast({ title: '加载中，请稍候', icon: 'none' });
+      return;
+    }
+
     // 如果尚未开始，先启动会话
     if (!this.data.isActive) {
       this.startSession();
@@ -194,7 +205,9 @@ Page({
     wx.showLoading({ title: '准备中...' });
 
     try {
-      // 先记录本地时间，确保和云端 startTime 一致
+      // 安全检查：创建前先关闭所有残留的活跃会话
+      await dbUtil.closeOrphanSessions();
+
       const now = Date.now();
 
       const sessionId = await dbUtil.createSession({
@@ -215,7 +228,6 @@ Page({
         lastTapHint: '',
       });
 
-      // 确保只有一个定时器
       this.clearTimer();
       this.startTimer();
       wx.hideLoading();
@@ -237,7 +249,6 @@ Page({
     const duration = Date.now() - this._startTime;
     const { realCount, sessionId, currentMethod } = this.data;
 
-    // 评估结果
     const result = evaluateResult(currentMethod, realCount, duration);
 
     this.setData({
@@ -254,7 +265,6 @@ Page({
       resultMessage: result.message,
     });
 
-    // 同步结束状态到云端
     try {
       await dbUtil.endSession(sessionId, realCount, duration);
     } catch (err) {
@@ -269,13 +279,11 @@ Page({
     const { sessionId } = this.data;
     if (!sessionId) return;
 
-    this._syncing = true;
     try {
       await dbUtil.addTap(sessionId, tapTime, realCount);
     } catch (err) {
       console.error('同步点击失败:', err);
     }
-    this._syncing = false;
   },
 
   // --- 计时器 ---
@@ -288,10 +296,8 @@ Page({
       const elapsed = Date.now() - this._startTime;
 
       if (currentMethod === 'cardiff') {
-        // Cardiff法：正计时
         this.setData({ timerText: formatDuration(elapsed) });
       } else {
-        // 倒计时
         const remain = totalDuration - elapsed;
         if (remain <= 0) {
           this.setData({ timerText: '00:00' });
@@ -329,20 +335,17 @@ Page({
     }
   },
 
-  // --- 恢复活跃会话（仅在本地无活跃会话时调用） ---
+  // --- 恢复活跃会话 ---
   async checkActiveSession() {
-    // 本地有活跃会话，不从云端覆盖
     if (this.data.isActive) return;
 
     try {
       const session = await dbUtil.getActiveSession();
       if (session) {
-        // 再次检查，防止异步期间状态变化
         if (this.data.isActive) return;
 
         this._startTime = session.startTime;
 
-        // 用云端数据恢复本地状态
         const taps = session.taps || [];
         const realCount = calcRealCount(taps);
 
@@ -355,7 +358,6 @@ Page({
           realCount,
         });
         this.updateMethodDesc();
-        // 先清再启，确保只有一个定时器
         this.clearTimer();
         this.startTimer();
       }

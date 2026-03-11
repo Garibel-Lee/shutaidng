@@ -206,6 +206,36 @@ async function getActiveSession() {
 }
 
 /**
+ * 关闭所有残留的活跃会话（创建新会话前调用）
+ * 防止多个 active 会话并存导致数据混乱
+ */
+async function closeOrphanSessions() {
+  const openid = await ensureOpenid();
+  const res = await db.collection(COLLECTION)
+    .where({
+      _openid: openid,
+      status: 'active',
+    })
+    .get();
+
+  const tasks = res.data.map((s) => {
+    const duration = Date.now() - s.startTime;
+    return db.collection(COLLECTION).doc(s._id).update({
+      data: {
+        status: 'completed',
+        endTime: Date.now(),
+        duration,
+      },
+    });
+  });
+
+  if (tasks.length > 0) {
+    await Promise.all(tasks);
+    console.log(`已关闭 ${tasks.length} 个残留活跃会话`);
+  }
+}
+
+/**
  * 删除会话
  */
 async function deleteSession(sessionId) {
@@ -230,6 +260,7 @@ module.exports = {
   getSessionsByRange,
   getDailyStats,
   getActiveSession,
+  closeOrphanSessions,
   deleteSession,
   formatDateKey,
 };
