@@ -56,19 +56,33 @@ Page({
         ? Math.round(Math.min(...dailyAvgs) * 10) / 10
         : 0;
 
-      // 柱状图（用每日总次数）
+      // 柱状图：柱子=总次数，圆点=当日次均
       const maxDayCount = activeDays.length > 0
         ? Math.max(...activeDays.map((d) => d.totalCount))
         : 0;
       const maxBarHeight = 240;
-      const chartData = stats.map((d) => {
+
+      // 计算每天的次均
+      const dayAvgs = stats.map((d) =>
+        d.sessions > 0 ? d.totalCount / d.sessions : 0
+      );
+      const maxDayAvg = dayAvgs.length > 0 ? Math.max(...dayAvgs) : 0;
+
+      const chartData = stats.map((d, i) => {
         const barHeight = maxDayCount > 0
           ? Math.max(4, Math.round((d.totalCount / maxDayCount) * maxBarHeight))
           : 4;
+        const dayAvg = dayAvgs[i];
+        // 圆点高度：按次均的独立比例尺
+        const dotBottom = maxDayAvg > 0
+          ? Math.max(8, Math.round((dayAvg / maxDayAvg) * maxBarHeight))
+          : 0;
         const dateParts = d.date.split('-');
         return {
           ...d,
           barHeight,
+          dayAvg: dayAvg > 0 ? dayAvg.toFixed(1) : '',
+          dotBottom: dayAvg > 0 ? dotBottom : 0,
           shortDate: `${parseInt(dateParts[1])}/${parseInt(dateParts[2])}`,
         };
       });

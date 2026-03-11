@@ -49,7 +49,19 @@
 
   <!-- 柱状图 -->
   <view class="card chart-card">
-    <view class="chart-title">每日胎动趋势</view>
+    <view class="chart-header">
+      <view class="chart-title">每日胎动趋势</view>
+      <view class="chart-legend">
+        <view class="legend-item">
+          <view class="legend-bar"></view>
+          <text class="legend-text">总次数</text>
+        </view>
+        <view class="legend-item">
+          <view class="legend-dot"></view>
+          <text class="legend-text">次均</text>
+        </view>
+      </view>
+    </view>
     <view class="chart-container">
       <view class="chart-bars">
         <view
@@ -58,11 +70,22 @@
           wx:key="date"
         >
           <view class="chart-value">{{item.totalCount || ''}}</view>
-          <view
-            class="chart-bar"
-            style="height: {{item.barHeight}}rpx"
-          >
-            <view class="chart-bar-fill {{item.totalCount < 3 && item.totalCount > 0 ? 'bar-warning' : ''}}"></view>
+          <view class="chart-bar-area">
+            <!-- 柱子：总次数 -->
+            <view
+              class="chart-bar"
+              style="height: {{item.barHeight}}rpx"
+            >
+              <view class="chart-bar-fill {{item.totalCount < 3 && item.totalCount > 0 ? 'bar-warning' : ''}}"></view>
+            </view>
+            <!-- 圆点：当日次均 -->
+            <view
+              class="chart-dot"
+              wx:if="{{item.dotBottom > 0}}"
+              style="bottom: {{item.dotBottom}}rpx"
+            >
+              <view class="chart-dot-label">{{item.dayAvg}}</view>
+            </view>
           </view>
           <view class="chart-date">{{item.shortDate}}</view>
         </view>

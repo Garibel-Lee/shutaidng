@@ -55,11 +55,49 @@
   padding: 32rpx;
 }
 
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28rpx;
+}
+
 .chart-title {
   font-size: 32rpx;
   font-weight: 600;
   color: #333;
-  margin-bottom: 28rpx;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 20rpx;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.legend-bar {
+  width: 24rpx;
+  height: 14rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(90deg, #FF8FA0, #FF6B81);
+}
+
+.legend-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #5B9BD5;
+  border: 3rpx solid #fff;
+  box-shadow: 0 0 0 2rpx #5B9BD5;
+}
+
+.legend-text {
+  font-size: 22rpx;
+  color: #999;
 }
 
 .chart-container {
@@ -71,7 +109,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-around;
-  min-height: 300rpx;
+  min-height: 320rpx;
   padding: 0 10rpx;
 }
 
@@ -84,15 +122,25 @@
 }
 
 .chart-value {
-  font-size: 26rpx;
-  color: #999;
+  font-size: 24rpx;
+  color: #FF6B81;
+  font-weight: 500;
   margin-bottom: 8rpx;
   min-height: 32rpx;
 }
 
+.chart-bar-area {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  min-height: 260rpx;
+}
+
 .chart-bar {
-  width: 36rpx;
-  border-radius: 18rpx 18rpx 0 0;
+  width: 32rpx;
+  border-radius: 16rpx 16rpx 0 0;
   overflow: hidden;
   min-height: 4rpx;
 }
@@ -101,15 +149,44 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(180deg, #FF8FA0, #FF6B81);
-  border-radius: 18rpx 18rpx 0 0;
+  border-radius: 16rpx 16rpx 0 0;
 }
 
 .chart-bar-fill.bar-warning {
   background: linear-gradient(180deg, #FFB74D, #FF9800);
 }
 
+/* 次均圆点 */
+.chart-dot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.chart-dot::after {
+  content: '';
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #5B9BD5;
+  border: 3rpx solid #fff;
+  box-shadow: 0 2rpx 6rpx rgba(91, 155, 213, 0.4);
+}
+
+.chart-dot-label {
+  font-size: 20rpx;
+  color: #5B9BD5;
+  font-weight: 500;
+  margin-bottom: 4rpx;
+  white-space: nowrap;
+}
+
 .chart-date {
-  font-size: 26rpx;
+  font-size: 24rpx;
   color: #bbb;
   margin-top: 10rpx;
   white-space: nowrap;
